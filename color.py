@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import sys
-import cv2
 import math
 
 COLORS_ORIG = {
@@ -74,8 +73,11 @@ def update_centroids(state):
         averages = list(map(lambda x: state[x]["avg"], indices))
 
         new_avg = rect_average([averages])
-        COLORS_BGR[color] = new_avg
-        print(f"Updated {color} to {COLORS_BGR[color]}")
+        if new_avg is not None:
+            COLORS_BGR[color] = new_avg
+            print(f"Updated {color} to {COLORS_BGR[color]}")
+        else:
+            print(f"Could not update {color}, new_avg is None")
 
 
 def update_distances(square):

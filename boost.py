@@ -1,5 +1,9 @@
+import asyncio
+from contextlib import suppress
+from bleak import BleakScanner, BleakClient
 from pylgbst.hub import MoveHub, COLORS, COLOR_NONE, COLOR_RED
-from pylgbst import get_connection_bleak
+from pylgbst import get_connection_bleak, get_connection_bluegiga
+from pylgbst.comms.cbleak import BleakDriver
 import time
 import logging
 
@@ -9,14 +13,17 @@ RTURN_OVERSHOOT = 24
 LTURN_OVERSHOOT = -19
 
 GRIP_TURN = 90
-ROD_TURN = 80
+ROD_TURN = -240
+
+HUB_ADDRESS = "00:16:53:A0:E0:6B"  
 
 class Boost():
     def __init__(self):
-        self.grip = None
-        self.hub = MoveHub(get_connection_bleak(hub_mac = "D8EED5BD-D9DA-43C5-97E1-4273F0368182"))
-        
-        
+        self.grip = True  # True means grip is up, False means grip is down
+        ##self.hub = MoveHub(hub_connection(HUB_ADDRESS))
+        # self.hub = MoveHub(get_connection_bleak(hub_name = "LEGO Move Hub"))
+        self.hub = MoveHub(get_connection_bluegiga(hub_name = "LEGO Move Hub"))
+
     def rotate(self, direction: int, overshoot: bool = False):
         overshoot_value = 0
         if overshoot:
@@ -28,7 +35,7 @@ class Boost():
         print(direction*QUARTER_TURN + overshoot_value)
         res = self.hub.motor_external.angled(direction*QUARTER_TURN + overshoot_value, 0.1)
         if overshoot:
-            res &= self.hub.motor_external.angled(-overshoot_value, 1)
+            res = self.hub.motor_external.angled(-overshoot_value, 1)
         return res
         
     def grip_up(self):
@@ -48,12 +55,11 @@ class Boost():
     
     def tilt(self):
         self.grip_down()
-        res = self.hub.motor_A.angled(-ROD_TURN, 0.2)
-        res &= self.hub.motor_A.angled(ROD_TURN, 0.5)
+        res = self.hub.motor_A.angled(-ROD_TURN, 0.6)
+        res = self.hub.motor_A.angled(ROD_TURN, 0.5)
         self.grip_up()
         return res
 
     def off(self):
         self.hub.switch_off()
-
 

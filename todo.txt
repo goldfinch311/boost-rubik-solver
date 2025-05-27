@@ -1,0 +1,4 @@
+Make sure everything is right place to start with - grip up, pole down
+Document tr & tl
+Error handling if the move doesn't finish?
+Disconnect properly

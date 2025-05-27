@@ -1,13 +1,26 @@
 import color
 import time
-from rubik_solver import utils
+
 import json
-from rubik_solver.CubieCube import DupedEdge
+
+from rubik_solver import utils
+##from ..rubik_solver.CubieCube import DupedEdge
+
+from rubik_solver.Solver import Beginner
+from rubik_solver.Solver import CFOP
+from rubik_solver.Solver import Kociemba
+
 
 MOVE_MAP = {
     "R": ["l", "t", "tr", "r", "t", "l"],
     "R'": ["l", "t", "tl", "l", "t", "l"]
 
+}
+
+METHODS = {
+    'Beginner': Beginner.BeginnerSolver,
+    'CFOP': CFOP.CFOPSolver,
+    'Kociemba': Kociemba.KociembaSolver
 }
 
 class Solver:
@@ -135,7 +148,7 @@ class Solver:
         print(state, normalized_kociemba)
         solution = None
         try:
-            solution = [str(x) for x in utils.solve(normalized_kociemba, 'Kociemba')]
+            solution = [str(x) for x in utils.solve(normalized_kociemba, METHODS['Kociemba'])]
 
         except:
             print("Error finding a solution, please retry")
@@ -148,7 +161,7 @@ class Solver:
 if __name__ == '__main__':
     solver = Solver(1, 2)
     s = "yyryyryyrbbbbbbbbbrrwrrwrrwgggggggggyooyooyoowwowwowwo"
-    solution = [str(x) for x in utils.solve(s, 'Kociemba')]
+    solution = [str(x) for x in utils.solve(s, METHODS['Kociemba'])]
     print(solution)
     moves = solver.translate_moves(solution)
     print(moves)

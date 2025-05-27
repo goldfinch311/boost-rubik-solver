@@ -7,7 +7,7 @@ boost = Boost()
 webcam = Webcam()
 solver = Solver(boost, webcam)
 
-print("Avaliable commands:")
+print("Available commands:")
 print("s   - solve the cube")
 print("r   - rotate bed clockwise")
 print("l   - rotate bed counter-clockwise")
@@ -47,7 +47,8 @@ def runloop():
             print("Unknown command")
             
 
-runloop = threading.Thread(target=runloop, daemon=True)
-runloop.start()
+# runloop_thread = threading.Thread(target=runloop, daemon=True)
+# runloop_thread.start()
+runloop()
 webcam.start_video()
 
