@@ -47,8 +47,8 @@ def runloop():
             print("Unknown command")
             
 
-# runloop_thread = threading.Thread(target=runloop, daemon=True)
-# runloop_thread.start()
-runloop()
+runloop_thread = threading.Thread(target=runloop, daemon=True)
+runloop_thread.start()
+
 webcam.start_video()
 

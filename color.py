@@ -36,6 +36,15 @@ def name_to_bgr(name):
     return COLORS_ORIG[name]
 
 def rect_average(rect):
+    """
+    Calculates the average RGB color of a rectangular region.
+    Args:
+        rect (list[list[tuple[int, int, int]]]): A 2D list representing a rectangle,
+            where each element is a tuple of (R, G, B) values.
+    Returns:
+        tuple[int, int, int] or None: The average (R, G, B) color as a tuple of integers,
+            or None if the input rectangle is empty.
+    """
     r   = 0
     g   = 0
     b   = 0
@@ -44,9 +53,9 @@ def rect_average(rect):
     for y in range(len(rect)):
         for x in range(len(rect[y])):
             chunk = rect[y][x]
-            r += chunk[0]
-            g += chunk[1]
-            b += chunk[2]
+            r += int(chunk[0])
+            g += int(chunk[1])
+            b += int(chunk[2])
             num += 1
     if not num:
         return None
@@ -65,6 +74,16 @@ def detect_bgr(average):
     return (found_color, err)
 
 def distance(c1, c2):
+    """
+    Calculates the Euclidean distance between two RGB color tuples.
+
+    Args:
+        c1 (tuple): The first color as a tuple of three integers (R, G, B).
+        c2 (tuple): The second color as a tuple of three integers (R, G, B).
+
+    Returns:
+        float: The Euclidean distance between the two colors.
+    """
     return math.sqrt((c1[0] - c2[0])**2 + (c1[1] - c2[1])**2 + (c1[2] - c2[2])**2)
 
 def update_centroids(state):
