@@ -4,21 +4,21 @@ import sys
 import math
 
 COLORS_ORIG = {
-    'r' : (0, 0, 255),
-    'o' : (0, 165, 255),
-    'b' : (255, 0, 0),
-    'g' : (0, 255, 0),
-    'w' : (255, 255, 255),
-    'y' : (0, 255, 255),
+    'r' : (74, 72, 165),  # (0, 0, 255),
+    'o' : (78, 86, 213), #(0, 165, 255),
+    'b' : (132, 98, 75), #(255, 0, 0),
+    'g' : (105, 139, 99), #(0, 255, 0),
+    'w' : (85, 84, 94), #(255, 255, 255),  (actually black)
+    'y' : (118, 165, 189), #(0, 255, 255),
 }
 
 COLORS_BGR = {
-    'r' : (0, 0, 255),
-    'o' : (0, 165, 255),
-    'b' : (255, 0, 0),
-    'g' : (0, 255, 0),
-    'w' : (255, 255, 255),
-    'y' : (0, 255, 255),
+    'r' : (74, 72, 165),  # (0, 0, 255),
+    'o' : (78, 86, 213), #(0, 165, 255),
+    'b' : (132, 98, 75), #(255, 0, 0),
+    'g' : (105, 139, 99), #(0, 255, 0),
+    'w' : (85, 84, 94), #(255, 255, 255),  (actually black)
+    'y' : (118, 165, 189), #(0, 255, 255),
 }
 
 CLUSTERS = {
@@ -31,13 +31,25 @@ CLUSTERS = {
 }
 
 def name_to_bgr(name):
+    """
+    Converts a color name to its corresponding BGR (Blue, Green, Red) tuple.
+
+    Args:
+        name (str): The name of the color. If 'x', returns black (0, 0, 0).
+
+    Returns:
+        tuple: A tuple representing the BGR color.
+
+    Raises:
+        KeyError: If the color name is not 'x' and not found in COLORS_ORIG.
+    """
     if name == 'x':
         return (0, 0, 0)
     return COLORS_ORIG[name]
 
 def rect_average(rect):
     """
-    Calculates the average RGB color of a rectangular region.
+    Calculates the average BGR color of a rectangular region.
     Args:
         rect (list[list[tuple[int, int, int]]]): A 2D list representing a rectangle,
             where each element is a tuple of (R, G, B) values.
@@ -53,7 +65,7 @@ def rect_average(rect):
     for y in range(len(rect)):
         for x in range(len(rect[y])):
             chunk = rect[y][x]
-            r += int(chunk[0])
+            r += int(chunk[0])   # This says r, g, b but I think it's actually BGR
             g += int(chunk[1])
             b += int(chunk[2])
             num += 1
@@ -63,6 +75,16 @@ def rect_average(rect):
 
 
 def detect_bgr(average):
+    """
+    Detects the closest matching color name for a given BGR average value.
+    Args:
+        average (tuple or list): The average BGR color value as a tuple or list of three integers.
+    Returns:
+        tuple: A tuple containing the name of the closest matching color (str) and the corresponding error (float or int).
+    Notes:
+        - The function compares the input BGR value to predefined colors in the COLORS_BGR dictionary.
+        - The distance between colors is calculated using the `distance` function.
+    """
     err = 1000
     found_color = 'black'
     for name, rgb in COLORS_BGR.items():
@@ -219,6 +241,12 @@ def cluster(state):
 
 
 def get_colors(state):
+   #  """
+   #  Assigns a color letter to each square by finding the closest match in COLORS_BGR.
+   #  Returns a string of color letters.
+   #  """
+   #  return "".join([detect_bgr(sq["avg"])[0] for sq in state])
+
     colors = cluster(state)
     return "".join(list(map(lambda x: x["color"], colors)))
 

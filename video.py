@@ -9,8 +9,9 @@ import json
 import threading
 import color
 
-REGION_SIZE = 24  # was 32
-REGION_PAD = 80  # was 192
+REGION_SIZE = 10  # was 32
+REGION_PAD = 90  # was 192
+
 PREVIEW_SIZE = 20 # was 64
 PREVIEW_PAD = 1
 PREVIEW_CUBE_SIZE = (PREVIEW_SIZE+PREVIEW_PAD)*3
@@ -28,8 +29,10 @@ PREVIEW_SIDE_OFFSETS = [
 FRAME_WIDTH = 640
 FRAME_HEIGHT = 480
 
-GRID_ORIGIN_X = 30
-GRID_ORIGIN_Y = 200
+GRID_ORIGIN_X = 60
+GRID_ORIGIN_Y = 230
+
+WEBCAM_INDEX = 1
 
 class Webcam:
     """
@@ -63,7 +66,7 @@ class Webcam:
         and prints the value of the `PREVIEW_SIDE_OFFSETS` variable for debugging or informational purposes.
         """
         self.update_state()
-        print("Initiating webcam: " + str(PREVIEW_SIDE_OFFSETS))
+        # print("Initiating webcam: " + str(PREVIEW_SIDE_OFFSETS))
 
     def draw_regions(self, frame):
         """
@@ -82,6 +85,7 @@ class Webcam:
         cv2.rectangle(frame, (FRAME_WIDTH // 2, 0), (FRAME_WIDTH, FRAME_HEIGHT), (0, 100, 0), -1)
         for index in range(9):
             x, y = self.regions[index]
+            # print("Drawing region " + str(index) + " at: " + str([x, y]))
             rect  = frame[y:y+REGION_SIZE, x:x+REGION_SIZE]
             cv2.rectangle(frame, (x,y), (x+REGION_SIZE, y+REGION_SIZE), (255, 255, 255), 2)
 
@@ -110,7 +114,7 @@ class Webcam:
                 for x in range(3):
                     color = self.state[side*9 + y*3 + x]
                     # dummy_bgr = (0, 0, 255)
-                   # print("Drawing for (" + str(x) + ", " + str(y) + ") with color " + str(color))
+                    # print("Drawing for side " + str(side) + " (" + str(x) + ", " + str(y) + ") with color " + str(color))
                     cv2.rectangle(frame,
                         (offsetx+x*(PREVIEW_SIZE+PREVIEW_PAD), offsety+y*(PREVIEW_SIZE+PREVIEW_PAD)),
                         (offsetx+x*(PREVIEW_SIZE+PREVIEW_PAD)+PREVIEW_SIZE, offsety+y*(PREVIEW_SIZE+PREVIEW_PAD)+PREVIEW_SIZE),
@@ -161,7 +165,8 @@ class Webcam:
         """
         print("Starting video loop")
 
-        self.cam = cv2.VideoCapture(0)
+        self.cam = cv2.VideoCapture(WEBCAM_INDEX)
+        self.cam.set(cv2.CAP_PROP_AUTO_WB, 0.0)
         cv2.namedWindow("win1");
         cv2.moveWindow("win1", 20, 20);
         while self.running:
@@ -189,7 +194,7 @@ class Webcam:
         self.regions = []
         for y in range(3):
             for x in range(3):
-                print("Adding region at: " + str([GRID_ORIGIN_X+x*(REGION_SIZE+REGION_PAD), GRID_ORIGIN_Y+y*(REGION_SIZE+REGION_PAD)]))
+                # print("Adding region at: " + str([GRID_ORIGIN_X+x*(REGION_SIZE+REGION_PAD), GRID_ORIGIN_Y+y*(REGION_SIZE+REGION_PAD)]))
                 self.regions.append([GRID_ORIGIN_X+x*(REGION_SIZE+REGION_PAD), GRID_ORIGIN_Y+y*(REGION_SIZE+REGION_PAD)])
                 
         self.video_loop()

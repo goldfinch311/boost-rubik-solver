@@ -57,9 +57,9 @@ class Solver:
         bottom = self.webcam.scan()
 
         state = list(map(lambda x: {"avg": x}, top + left + front + right + rear + bottom))
-        print(state)
+        print("cube state: " + str(state))
         colors = color.get_colors(state)
-        print(colors)
+        print("cube colours: " + str(colors))
         self.webcam.update_state(colors)
 
         return colors
@@ -106,7 +106,7 @@ class Solver:
             elif m[1] == "2":
                 moves.append("tl2")
 
-        print(moves)
+        print("moves: " + str(moves))
         return moves
 
     def execute(self, moves):
@@ -145,7 +145,7 @@ class Solver:
     def solve(self):
         state = self.get_state()
         normalized_kociemba = self.patch_kociemba(state)
-        print(state, normalized_kociemba)
+        print("state: " + state, normalized_kociemba)
         solution = None
         try:
             solution = [str(x) for x in utils.solve(normalized_kociemba, METHODS['Kociemba'])]
@@ -154,7 +154,7 @@ class Solver:
             print("Error finding a solution, please retry")
 
         if solution:
-            print(solution)
+            print("solution: " + str(solution))
             moves = self.translate_moves(solution)
             self.execute(moves)
 

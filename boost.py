@@ -19,7 +19,7 @@ HUB_ADDRESS = "00:16:53:A0:E0:6B"
 
 class Boost():
     def __init__(self):
-        self.grip = True  # True means grip is up, False means grip is down
+        self.grip = True
         ##self.hub = MoveHub(hub_connection(HUB_ADDRESS))
         # self.hub = MoveHub(get_connection_bleak(hub_name = "LEGO Move Hub"))
         self.hub = MoveHub(get_connection_bluegiga(hub_name = "LEGO Move Hub"))
@@ -34,8 +34,10 @@ class Boost():
 
         print(direction*QUARTER_TURN + overshoot_value)
         res = self.hub.motor_external.angled(direction*QUARTER_TURN + overshoot_value, 0.1)
+        print("res: " + str(res))
         if overshoot:
             res = self.hub.motor_external.angled(-overshoot_value, 1)
+            print("overshoot res: " + str(res))
         return res
         
     def grip_up(self):
